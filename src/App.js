@@ -1,23 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import PostAddForm from "./components/postAddForm";
+import PostDetails from "./components/postDetails";
+import PostList from "./components/postList";
 
 function App() {
+  const [selectedPostID, setSelectedPostID] = useState();
+  const [showAddPost, setShowAddPost] = useState(false);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div
+        style={{ padding: 20, width: "30%", borderRight: "2px solid black" }}
+      >
+        <PostList setPostID={setSelectedPostID} showAddPost={setShowAddPost} />
+      </div>
+      <div style={{ padding: 20, width: "70%" }}>
+        <h2>Post details</h2>
+        {selectedPostID && !showAddPost && (
+          <PostDetails postId={selectedPostID} />
+        )}
+        {showAddPost && !selectedPostID && (
+          <PostAddForm
+            showAddPost={setShowAddPost}
+            setPostId={setSelectedPostID}
+          />
+        )}
+      </div>
     </div>
   );
 }
