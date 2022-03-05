@@ -4,8 +4,9 @@ import { getPosts, deletePost } from "../utils/api-utils";
 
 function PostList({ setPostID, showAddPost }) {
   const queryClient = useQueryClient();
+
   const { data, isLoading, isError } = useQuery("posts", getPosts);
-  const { isLoading, mutate } = useMutation(deletePost, {
+  const { isLoading: deleteLoading, mutate } = useMutation(deletePost, {
     onSuccess: () => {
       queryClient.invalidateQueries("posts");
     },
@@ -13,10 +14,12 @@ function PostList({ setPostID, showAddPost }) {
 
   // const tenData = data?.slice(1, 10);
   const handleDelete = (id) => {
-    alert("Are you sure?");
+    if (window.confirm("Are you sure?")) {
+      mutate(id);
+    }
   };
 
-  if (isLoading) {
+  if (isLoading || deleteLoading) {
     return "Loading Posts....";
   }
 
@@ -35,7 +38,7 @@ function PostList({ setPostID, showAddPost }) {
           <li key={post.id}>
             {post.title}
             <button onClick={() => setPostID(post.id)}>View</button>
-            <button onClick={handleDelete}>Delete</button> }
+            <button onClick={handleDelete(post.id)}>Delete</button> }
           </li>
         ))}
       </ul>
